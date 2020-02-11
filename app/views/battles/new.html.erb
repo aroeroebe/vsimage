@@ -1,0 +1,21 @@
+<h1><%= image_tag @post.image.url if @post.image? %>VS画像を選ぶ</h1>
+
+
+<% if logged_in? %>
+  <div class="row">
+    <aside class="col-sm-4">
+      <%= form_with(model: @battle, local: true) do |f| %>
+      <%= render 'layouts/error_messages', model: f.object %>
+        <div class="form-group">
+          <%= f.label :title %>
+          <%= f.text_field :title, class: 'form-control', rows: 5 %>
+        </div>
+        <div class="form-group">
+         <%= f.label :imaged %>
+         <br>
+         <%= f.file_field :imaged %>
+        </div>
+        <%= hidden_field_tag :post_id, @post.id %>
+        <%= f.submit 'Post', class: 'btn btn-primary btn-block' %>
+      <% end %>
+<% end %>   

@@ -1,0 +1,50 @@
+<div class="row">
+  <aside class="col-sm-4">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title"><%= @user.name %></h3>
+      </div>
+      <div class="card-body">
+       #〇〇連勝中
+       <% if @posts.present? %> 
+         <% @posts.each do |post| %>
+            
+            <% if post.battle.nil? %>
+          <%= image_tag post.image.url if post.image? %> ＶＳ画像待ち
+          <% if current_user == post.user %>
+            <%= link_to "Delete", post, method: :delete, data: { confirm: "You sure?" }, class: 'btn btn-danger btn-sm' %>
+            <% end %>
+          <% end %>
+          
+        <% if post.battle %>  
+          <% if @time < post.battle.created_at+24.hours %>
+            <p><%= image_tag post.image.url if post.image? %>VS対戦者<%= image_tag post.battle.imaged.url if post.battle.imaged? %></p>
+            あと<%= Time.at(post.battle.created_at+24.hours-@time).utc.strftime('%X') %>
+          <% end %>
+        <% end %>
+        
+        <% if post.battle %>
+          <% if post_count(post) > battle_count(post.battle) && @time > post.battle.created_at+24.hours %>
+                <p>勝<%= image_tag post.image.url if post.image? %>負<%= image_tag post.battle.imaged.url if post.battle.imaged? %></p>
+          <% elsif post_count(post) < battle_count(post.battle) && @time > post.battle.created_at+24.hours %>
+                <p>負<%= image_tag post.image.url if post.image? %>勝<%= image_tag post.battle.imaged.url if post.battle.imaged? %></p>
+          <% elsif post_count(post) == battle_count(post.battle) && @time > post.battle.created_at+24.hours %>
+                <p>引き分け<%= image_tag post.image.url if post.image? %>引き分け<%= image_tag post.battle.imaged.url if post.battle.imaged? %></p>
+          <% end %>
+        <% end %>
+        
+         <% end %>
+      <% else %>
+       対戦画像を投稿しましょう 
+      <% end %>
+       
+      </div>
+    </div>
+  </aside>
+  <div class="col-sm-8">
+    <ul class="nav nav-tabs nav-justified mb-3">
+      <li class="nav-item"><a href="#" class="nav-link">ステータス</a></li>
+      <li class="nav-item"><a href="#" class="nav-link">リベンジ通知</a></li>
+    </ul>
+  </div>
+</div>

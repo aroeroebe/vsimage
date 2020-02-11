@@ -1,0 +1,84 @@
+<% if logged_in? %>
+  
+ <h2>VS待ち</h2>
+ <% if @posts.present? %>
+   <% @posts.each do |post| %>
+     <% if post.battle.nil? %>
+       <ul>
+         <li>
+           <p>
+             <%= post.title %>
+           </p>
+           <p>
+             <%= image_tag post.image.url if post.image? %> <h3>VS  <%= link_to '画像待ち',new_battle_path(id:post.id) %></h3>
+           </p>
+           <p>
+            <% if current_user == post.user %>
+            <%= link_to "Delete", post, method: :delete, data: { confirm: "You sure?" }, class: 'btn btn-danger btn-sm' %>
+           </p>
+           <% end %>
+   <% end %>
+     <% end %>       
+<% else %>
+  <%= link_to 'あなたが今日最初のユーザーです。早速画像を投稿してバトルを募集してみましょう',new_post_path %>
+<% end %>  
+ 
+    </li>     
+  </ul>       
+         
+ <h2>VS中</h2>
+  <% if @battles.present? %>
+    
+      <% @battles.each do |battle| %>
+        <% if @time < battle.created_at+24.hours %>   
+          <%= battle.post.title %>                                                  <%= battle.title %>
+          <p><%= image_tag battle.post.image.url if battle.post.image? %>VS<%= image_tag battle.imaged.url if battle.imaged? %></p>
+          <p><div class="like_button"><%= render 'likes/like_button', post: battle.post %></div>
+             <div class="seclike_button"><%= render 'likes/seclike_button', battle: battle %></div>
+          </p>
+          <p>投票数：<%= post_count(battle.post) %> 投票数：<%= battle_count(battle) %></p>  
+        <% end %>
+      <% end %> 
+ <% else %>
+  <p>画像待ちの画像からバトルに参加しましょう</p>
+ <% end %> 
+ 
+ 
+ <h2>VS結果</h2>
+ 
+ <% if @battles.present? %>
+    <% @battles.each do |battle| %>
+    
+      <% if post_count(battle.post) > battle_count(battle) && @time > battle.created_at+24.hours %>
+          <%= battle.post.title %>                                                  <%= battle.title %>
+          win<p><%= image_tag battle.post.image.url if battle.post.image? %>lose<%= image_tag battle.imaged.url if battle.imaged? %></p>
+          <p>投票数：<%= post_count(battle.post) %> 投票数：<%= battle_count(battle) %></p>
+      <% elsif post_count(battle.post) < battle_count(battle) && @time > battle.created_at+24.hours %>
+          <%= battle.post.title %>                                                  <%= battle.title %>
+          win<p><%= image_tag battle.imaged.url if battle.imaged? %>lose<%= image_tag battle.post.image.url if battle.post.image? %></p>
+          <p>投票数：<%= battle_count(battle) %> 投票数：<%= post_count(battle.post) %></p>
+      <% elsif post_count(battle.post) == battle_count(battle) && @time > battle.created_at+24.hours  %>    
+          <%= battle.post.title %>                                                  <%= battle.title %>
+          引き分け<p><%= image_tag battle.post.image.url if battle.post.image? %>引き分け<%= image_tag battle.imaged.url if battle.imaged? %></p>
+          <p>投票数：<%= post_count(battle.post) %> 投票数：<%= battle_count(battle) %></p>
+      <% end %>
+      
+   <% end %>       
+ <% else %>
+  <p>画像待ちの画像からバトルに参加しましょう</p>
+ <% end %> 
+ 
+       
+
+ 
+      
+  
+ 
+<% else %>
+ <div class="center jumbotron">
+ <div class="text-center">
+    <h1>Welcome to the VSimage</h1>
+    <%= link_to '新規登録', signup_path, class: 'btn btn-lg btn-primary' %>
+</div>
+</div>
+<% end %>

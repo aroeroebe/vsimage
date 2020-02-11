@@ -1,0 +1,11 @@
+<% if current_user.secliking?(battle) %>
+    <%= form_with(model: current_user.seclikes.find_by(battle_id: battle.id), local: true, method: :delete) do |f| %>
+      <%= hidden_field_tag :battle_id, battle.id %>
+      <%= f.submit '投票を解除', class: 'btn btn-danger btn-block' %>
+    <% end %>
+  <% else %>
+    <%= form_with(model: current_user.seclikes.build, local: true) do |f| %>
+      <%= hidden_field_tag :battle_id, battle.id %>
+      <%= f.submit '投票する', class: 'btn btn-primary btn-block' %>
+    <% end %>
+<% end %>
